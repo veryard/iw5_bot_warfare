@@ -1174,6 +1174,9 @@ reload_thread()
 */
 updateBones()
 {
+	self notify( "bot_updateBones" );
+	self endon( "bot_updateBones" );
+	
 	self endon( "disconnect" );
 	self endon( "spawned_player" );
 	
