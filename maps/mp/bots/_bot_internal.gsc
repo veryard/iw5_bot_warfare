@@ -1174,30 +1174,30 @@ reload_thread()
 */
 updateBones()
 {
-	self notify( "bot_updateBones" );
-	self endon( "bot_updateBones" );
-	
 	self endon( "disconnect" );
 	self endon( "spawned_player" );
 	
-	bones = strtok( self.pers[ "bots" ][ "skill" ][ "bones" ], "," );
-	waittime = self.pers[ "bots" ][ "skill" ][ "bone_update_interval" ];
-	
 	for ( ;; )
 	{
-		self waittill_any_timeout( waittime, "new_enemy" );
+		oldbones = self.pers[ "bots" ][ "skill" ][ "bones" ];
+		bones = strtok( oldbones, "," );
 		
-		if ( !isalive( self ) )
+		while ( oldbones == self.pers[ "bots" ][ "skill" ][ "bones" ] )
 		{
-			return;
+			self waittill_any_timeout( self.pers[ "bots" ][ "skill" ][ "bone_update_interval" ], "new_enemy" );
+			
+			if ( !isalive( self ) )
+			{
+				return;
+			}
+			
+			if ( !isdefined( self.bot.target ) )
+			{
+				continue;
+			}
+			
+			self.bot.target.bone = random( bones );
 		}
-		
-		if ( !isdefined( self.bot.target ) )
-		{
-			continue;
-		}
-		
-		self.bot.target.bone = random( bones );
 	}
 }
 
