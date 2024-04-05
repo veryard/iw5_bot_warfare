@@ -131,7 +131,6 @@ You can find the ModDB release post [here](https://www.moddb.com/mods/bot-warfar
 - Ability
 - Salvation
 - Xensik - https://github.com/xensik/gsc-tool
-- KristofMorva - https://github.com/KristofMorva/preGSC
 
 ### Waypoint Creators
 - FragsAreUs - https://github.com/FragsAreUs
