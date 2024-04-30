@@ -8,6 +8,8 @@ init()
 	level.bot_builtins["botstop"] = ::do_botstop;
 	level.bot_builtins["botmovement"] = ::do_botmovement;
 	level.bot_builtins["botmeleeparams"] = ::do_botmeleeparams;
+	level.bot_builtins[ "botremoteangles" ] = ::do_botremoteangles;
+	level.bot_builtins[ "botangles" ] = ::do_botangles;
 }
 
 do_printconsole( s )
@@ -50,4 +52,14 @@ do_botmovement( forward, right )
 do_botmeleeparams( entNum, dist )
 {
 	self botmeleeparams( entNum, dist );
+}
+
+do_botremoteangles( pitch, yaw )
+{
+	self botremoteangles( pitch, yaw );
+}
+
+do_botangles( angles )
+{
+	self botangles( angles[ 0 ], angles[ 1 ], angles[ 2 ] );
 }

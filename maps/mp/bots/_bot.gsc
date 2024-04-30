@@ -280,6 +280,7 @@ init()
 	level.bots_fullautoguns[ "remote" ] = true;
 	
 	level thread fixGamemodes();
+	level thread fixPredMissile();
 	
 	level thread onPlayerConnect();
 	level thread addNotifyOnAirdrops();
@@ -289,6 +290,23 @@ init()
 	
 	level thread handleBots();
 	level thread onPlayerChat();
+}
+
+/*
+	Change func pointer to ours, so that we can link the player ref to the rocket
+*/
+fixPredMissile()
+{
+	for ( i = 0; i < 19; i++ )
+	{
+		if ( isdefined( level.killstreakfuncs ) && isdefined( level.killstreakfuncs[ "predator_missile" ] ) )
+		{
+			level.killstreakfuncs[ "predator_missile" ] = ::tryUsePredatorMissileFix;
+			break;
+		}
+		
+		wait 0.05;
+	}
 }
 
 /*
@@ -857,7 +875,7 @@ onPlayerConnect()
 onDisconnectPlayer()
 {
 	name = self.name;
-
+	
 	self waittill( "disconnect" );
 	waittillframeend;
 	
@@ -1419,11 +1437,11 @@ addBots_loop()
 	if ( fillMode == 0 || fillMode == 2 )
 	{
 		amount += players;
-	}
-	
-	if ( getdvarint( "bots_manage_fill_spec" ) )
-	{
-		amount += spec;
+		
+		if ( getdvarint( "bots_manage_fill_spec" ) )
+		{
+			amount += spec;
+		}
 	}
 	
 	if ( amount < fillAmount )
