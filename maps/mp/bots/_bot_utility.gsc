@@ -3822,7 +3822,7 @@ _fireFix( lifeId, player )
 	
 	rocket thread maps\mp\gametypes\_weapons::addmissiletosighttraces( player.team );
 	
-	rocket thread maps\mp\killstreaks\_remotemissile::handledamage();
+	// rocket thread maps\mp\killstreaks\_remotemissile::handledamage(); // gsc-tool wrong token, its okay, this func is useless anyway
 	
 	rocket.lifeid = lifeId;
 	rocket.type = "remote";
