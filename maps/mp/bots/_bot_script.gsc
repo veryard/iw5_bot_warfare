@@ -267,21 +267,27 @@ getAttachmentsForGun( gun )
 getPrimaries()
 {
 	primaries = [];
-	
+	sniper = getdvarint("bots_force_snipers");
 	for ( i = 0; i < 160; i++ )
 	{
 		weapon_type = tablelookupbyrow( "mp/statstable.csv", i, 2 );
 		
-		if ( weapon_type != "weapon_assault" && weapon_type != "weapon_riot" && weapon_type != "weapon_smg" && weapon_type != "weapon_sniper" && weapon_type != "weapon_lmg" && weapon_type != "weapon_shotgun" )
+		if (weapon_type != "weapon_sniper" && sniper == 1)
 		{
 			continue;
-		}
-		
-		weapon_name = tablelookupbyrow( "mp/statstable.csv", i, 4 );
-		
-		if ( issubstr( weapon_name, "jugg" ) )
-		{
-			continue;
+		} else {
+
+			if ( weapon_type != "weapon_assault" && weapon_type != "weapon_riot" && weapon_type != "weapon_smg" && weapon_type != "weapon_sniper" && weapon_type != "weapon_lmg" && weapon_type != "weapon_shotgun" )
+			{
+				continue;
+			}
+			
+			weapon_name = tablelookupbyrow( "mp/statstable.csv", i, 4 );
+			
+			if ( issubstr( weapon_name, "jugg" ) )
+			{
+				continue;
+			}
 		}
 		
 		primaries[ primaries.size ] = weapon_name;
@@ -604,8 +610,8 @@ chooseRandomPrimary()
 	primaries = getPrimaries();
 	allowOp = ( getdvarint( "bots_loadout_allow_op" ) >= 1 );
 	reasonable = getdvarint( "bots_loadout_reasonable" );
-	rank = self maps\mp\gametypes\_rank::getrankforxp( self getplayerdata( "experience" ) );
 	
+	rank = self maps\mp\gametypes\_rank::getrankforxp( self getplayerdata( "experience" ) );
 	while ( true )
 	{
 		primary = random( primaries );
@@ -1430,8 +1436,8 @@ chooseRandomClass( )
 	reasonable = getdvarint( "bots_loadout_reasonable" );
 	class = "";
 	rank = self maps\mp\gametypes\_rank::getrankforxp( self getplayerdata( "experience" ) ) + 1;
-	
-	if ( rank < 4 || ( randomint( 100 ) < 2 && !reasonable ) || ( isusingmatchrulesdata() && !level.matchrules_allowcustomclasses ) )
+	// BV: Allow any level to use custom classes
+	if ( rank < 8 || ( randomint( 100 ) < 2 && !reasonable ) || ( isusingmatchrulesdata() && !level.matchrules_allowcustomclasses ) )
 	{
 		while ( class == "" )
 		{
@@ -1711,7 +1717,7 @@ difficulty()
 				case 6:
 					self.pers[ "bots" ][ "skill" ][ "aim_time" ] = 0.2;
 					self.pers[ "bots" ][ "skill" ][ "init_react_time" ] = 250;
-					self.pers[ "bots" ][ "skill" ][ "reaction_time" ] = 150;
+					self.pers[ "bots" ][ "skill" ][ "reaction_time" ] = 100;
 					self.pers[ "bots" ][ "skill" ][ "no_trace_ads_time" ] = 2500;
 					self.pers[ "bots" ][ "skill" ][ "no_trace_look_time" ] = 4000;
 					self.pers[ "bots" ][ "skill" ][ "remember_time" ] = 5000;
@@ -1724,7 +1730,7 @@ difficulty()
 					self.pers[ "bots" ][ "skill" ][ "shoot_after_time" ] = 0.25;
 					self.pers[ "bots" ][ "skill" ][ "aim_offset_time" ] = 0.25;
 					self.pers[ "bots" ][ "skill" ][ "aim_offset_amount" ] = 1;
-					self.pers[ "bots" ][ "skill" ][ "bone_update_interval" ] = 0.25;
+					self.pers[ "bots" ][ "skill" ][ "bone_update_interval" ] = 0.15;
 					self.pers[ "bots" ][ "skill" ][ "bones" ] = "j_spineupper,j_head,j_head";
 					self.pers[ "bots" ][ "skill" ][ "ads_fov_multi" ] = 0.5;
 					self.pers[ "bots" ][ "skill" ][ "ads_aimspeed_multi" ] = 0.5;
@@ -1745,10 +1751,10 @@ difficulty()
 					self.pers[ "bots" ][ "skill" ][ "init_react_time" ] = 100;
 					self.pers[ "bots" ][ "skill" ][ "reaction_time" ] = 50;
 					self.pers[ "bots" ][ "skill" ][ "no_trace_ads_time" ] = 2500;
-					self.pers[ "bots" ][ "skill" ][ "no_trace_look_time" ] = 4000;
-					self.pers[ "bots" ][ "skill" ][ "remember_time" ] = 7500;
-					self.pers[ "bots" ][ "skill" ][ "fov" ] = 0.4;
-					self.pers[ "bots" ][ "skill" ][ "dist_max" ] = 15000;
+					self.pers[ "bots" ][ "skill" ][ "no_trace_look_time" ] = 6000;
+					self.pers[ "bots" ][ "skill" ][ "remember_time" ] = 9000;
+					self.pers[ "bots" ][ "skill" ][ "fov" ] = 0.2;
+					self.pers[ "bots" ][ "skill" ][ "dist_max" ] = 23000;
 					self.pers[ "bots" ][ "skill" ][ "dist_start" ] = 10000;
 					self.pers[ "bots" ][ "skill" ][ "spawn_time" ] = 0.05;
 					self.pers[ "bots" ][ "skill" ][ "help_dist" ] = 3000;
@@ -1761,10 +1767,10 @@ difficulty()
 					self.pers[ "bots" ][ "skill" ][ "ads_fov_multi" ] = 0.5;
 					self.pers[ "bots" ][ "skill" ][ "ads_aimspeed_multi" ] = 0.5;
 					
-					self.pers[ "bots" ][ "behavior" ][ "strafe" ] = 65;
+					self.pers[ "bots" ][ "behavior" ][ "strafe" ] = 80;
 					self.pers[ "bots" ][ "behavior" ][ "nade" ] = 65;
 					self.pers[ "bots" ][ "behavior" ][ "sprint" ] = 70;
-					self.pers[ "bots" ][ "behavior" ][ "camp" ] = 5;
+					self.pers[ "bots" ][ "behavior" ][ "camp" ] = 1;
 					self.pers[ "bots" ][ "behavior" ][ "follow" ] = 5;
 					self.pers[ "bots" ][ "behavior" ][ "crouch" ] = 5;
 					self.pers[ "bots" ][ "behavior" ][ "switch" ] = 2;
