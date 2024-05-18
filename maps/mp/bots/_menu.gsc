@@ -919,7 +919,7 @@ addOptions()
 	{
 		_temp = "false";
 	}
-		
+	
 	self AddMenu( "set1", 0, "Bots use only good class setups: " + _temp, ::bot_func, "reasonable", _tempDvar );
 	
 	_tempDvar = getdvarint( "bots_loadout_allow_op" );
@@ -945,20 +945,6 @@ addOptions()
 	{
 		_temp = "false";
 	}
-
-	// FOrce Snipers
-
-	self AddMenu ("set1", 13, "Force snipers to use sniper rifles: " + _temp, ::bot_func, "sniper", _tempDvar);
-
-	_tempDvar = getdvarint( "bots_force_snipers" );
-
-	if (_tempDvar) {
-		_temp = "true"
-	} else {
-		_temp = "false"
-	}
-
-	//
 	
 	self AddMenu( "set1", 2, "Bots can move: " + _temp, ::bot_func, "move", _tempDvar );
 	
@@ -1091,6 +1077,19 @@ addOptions()
 	}
 	
 	self AddMenu( "set1", 12, "Bots can ads: " + _temp, ::bot_func, "ads", _tempDvar );
+
+	_tempDvar = getdvarint( "bots_force_snipers" );
+	
+	if ( _tempDvar )
+	{
+		_temp = "true";
+	}
+	else
+	{
+		_temp = "false";
+	}
+	
+	self AddMenu( "set1", 13, "Bots force snipers: " + _temp, ::bot_func, "force_snipers", _tempDvar );
 }
 
 bot_func( a, b )
@@ -1100,6 +1099,11 @@ bot_func( a, b )
 		case "reasonable":
 			setdvar( "bots_loadout_reasonable", !b );
 			self iprintln( "Bots using reasonable setups: " + !b );
+			break;
+
+		case "force_snipers":
+			setdvar( "bots_force_snipers", !b );
+			self iprintln( "Bots using snipers only " + !b );
 			break;
 			
 		case "op":

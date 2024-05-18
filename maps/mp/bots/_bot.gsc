@@ -169,14 +169,15 @@ init()
 	{
 		setdvar( "bots_play_knife", true );
 	}
-
-	if (getdvar("bots_force_snipers") == "") {
-		setdvar("bots_force_snipers", false);
-	}
 	
 	if ( getdvar( "bots_play_fire" ) == "" ) // bots fire
 	{
 		setdvar( "bots_play_fire", true );
+	}
+
+	if ( getdvar( "bots_force_snipers" ) == "" ) // bots fire
+	{
+		setdvar( "bots_force_snipers", false );
 	}
 	
 	if ( getdvar( "bots_play_nade" ) == "" ) // bots grenade
