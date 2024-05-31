@@ -267,27 +267,22 @@ getAttachmentsForGun( gun )
 getPrimaries()
 {
 	primaries = [];
-	sniper = getdvarint("bots_force_snipers");
+	
 	for ( i = 0; i < 160; i++ )
 	{
 		weapon_type = tablelookupbyrow( "mp/statstable.csv", i, 2 );
-		if (weapon_type != "weapon_sniper" && sniper == 1) 
+		if ( weapon_type != "weapon_assault" && weapon_type != "weapon_riot" && weapon_type != "weapon_smg" && weapon_type != "weapon_sniper" && weapon_type != "weapon_lmg" && weapon_type != "weapon_shotgun" )
 		{
 			continue;
-		} else 
-		{
-			if ( weapon_type != "weapon_assault" && weapon_type != "weapon_riot" && weapon_type != "weapon_smg" && weapon_type != "weapon_sniper" && weapon_type != "weapon_lmg" && weapon_type != "weapon_shotgun" )
-			{
-				continue;
-			}
-			
-			weapon_name = tablelookupbyrow( "mp/statstable.csv", i, 4 );
-			
-			if ( issubstr( weapon_name, "jugg" ) )
-			{
-				continue;
-			}
 		}
+		
+		weapon_name = tablelookupbyrow( "mp/statstable.csv", i, 4 );
+		
+		if ( issubstr( weapon_name, "jugg" ) )
+		{
+			continue;
+		}
+		
 		primaries[ primaries.size ] = weapon_name;
 	}
 	
@@ -607,13 +602,14 @@ chooseRandomPrimary()
 {
 	primaries = getPrimaries();
 	allowOp = ( getdvarint( "bots_loadout_allow_op" ) >= 1 );
+	sniper = getdvarint("bots_force_snipers");
 	reasonable = getdvarint( "bots_loadout_reasonable" );
 	rank = self maps\mp\gametypes\_rank::getrankforxp( self getplayerdata( "experience" ) );
 	
 	while ( true )
 	{
 		primary = random( primaries );
-		
+
 		if ( !allowOp )
 		{
 			if ( primary == "riotshield" )
@@ -640,6 +636,14 @@ chooseRandomPrimary()
 			continue;
 		}
 		
+		if ( sniper )
+		{
+			if ( getweaponclass( primary ) != "weapon_sniper" )
+			{
+				continue;
+			}
+		}
+
 		return primary;
 	}
 }
@@ -651,6 +655,7 @@ chooseRandomSecondary()
 {
 	secondaries = getSecondaries();
 	allowOp = ( getdvarint( "bots_loadout_allow_op" ) >= 1 );
+	sniper = getdvarint("bots_force_snipers");
 	reasonable = getdvarint( "bots_loadout_reasonable" );
 	rank = self maps\mp\gametypes\_rank::getrankforxp( self getplayerdata( "experience" ) );
 	
@@ -658,6 +663,7 @@ chooseRandomSecondary()
 	{
 		secondary = random( secondaries );
 		
+		logprint( secondary + "\n");
 		if ( !allowOp )
 		{
 			if ( secondary == "iw5_smaw" || secondary == "rpg" || secondary == "m320" || secondary == "xm25" )
@@ -678,6 +684,14 @@ chooseRandomSecondary()
 		if ( rank < getUnlockLevel( secondary ) )
 		{
 			continue;
+		}
+
+		if ( sniper )
+		{
+			if ( !(secondary == "xm25" || secondary == "javelin" || secondary == "iw5_usp45" || secondary == "iw5_p99" || secondary == "iw5_deserteagle" || secondary == "rpg") )
+			{
+				continue;
+			}
 		}
 		
 		return secondary;
@@ -810,6 +824,7 @@ chooseRandomTactical()
 chooseRandomGrenade()
 {
 	perks = getPerks( "equipment" );
+	sniper = getdvarint("bots_force_snipers");
 	allowOp = ( getdvarint( "bots_loadout_allow_op" ) >= 1 );
 	rank = self maps\mp\gametypes\_rank::getrankforxp( self getplayerdata( "experience" ) );
 	reasonable = getdvarint( "bots_loadout_reasonable" );
@@ -817,7 +832,12 @@ chooseRandomGrenade()
 	while ( true )
 	{
 		perk = random( perks );
-		
+		if (sniper) {
+			if (!(perk == "c4_mp" || perk == "bouncingbetty_mp" || perk == "semtex" || perk == "throwingknife_mp" || perk == "claymore_mp" || perk == "frag_grenade_mp" || perk == "trophy_mp")) {
+				continue;
+			}
+		}
+
 		if ( !allowOp )
 		{
 		}
@@ -1747,7 +1767,7 @@ difficulty()
 				case 7:
 					self.pers[ "bots" ][ "skill" ][ "aim_time" ] = 0.1;
 					self.pers[ "bots" ][ "skill" ][ "init_react_time" ] = 100;
-					self.pers[ "bots" ][ "skill" ][ "reaction_time" ] = 50;
+					self.pers[ "bots" ][ "skill" ][ "reaction_time" ] = 25;
 					self.pers[ "bots" ][ "skill" ][ "no_trace_ads_time" ] = 2500;
 					self.pers[ "bots" ][ "skill" ][ "no_trace_look_time" ] = 4000;
 					self.pers[ "bots" ][ "skill" ][ "remember_time" ] = 7500;
@@ -1765,15 +1785,15 @@ difficulty()
 					self.pers[ "bots" ][ "skill" ][ "ads_fov_multi" ] = 0.5;
 					self.pers[ "bots" ][ "skill" ][ "ads_aimspeed_multi" ] = 0.5;
 					
-					self.pers[ "bots" ][ "behavior" ][ "strafe" ] = 65;
+					self.pers[ "bots" ][ "behavior" ][ "strafe" ] = 95;
 					self.pers[ "bots" ][ "behavior" ][ "nade" ] = 65;
 					self.pers[ "bots" ][ "behavior" ][ "sprint" ] = 70;
 					self.pers[ "bots" ][ "behavior" ][ "camp" ] = 5;
-					self.pers[ "bots" ][ "behavior" ][ "follow" ] = 5;
-					self.pers[ "bots" ][ "behavior" ][ "crouch" ] = 5;
-					self.pers[ "bots" ][ "behavior" ][ "switch" ] = 2;
+					self.pers[ "bots" ][ "behavior" ][ "follow" ] = 1;
+					self.pers[ "bots" ][ "behavior" ][ "crouch" ] = 1;
+					self.pers[ "bots" ][ "behavior" ][ "switch" ] = 1;
 					self.pers[ "bots" ][ "behavior" ][ "class" ] = 2;
-					self.pers[ "bots" ][ "behavior" ][ "jump" ] = 90;
+					self.pers[ "bots" ][ "behavior" ][ "jump" ] = 95;
 					break;
 			}
 		}
